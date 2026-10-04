@@ -1,0 +1,61 @@
+# Render blueprint - one-click deploy for the TrustMesh control plane.
+#
+# Render's free web service supports long-lived HTTP responses, so SSE works. The main
+# caveat is that the free tier spins the service down after ~15 minutes of inactivity,
+# so the first request after a pause takes 30-60 seconds to wake up. Open the health
+# endpoint a minute before presenting.
+#
+# Setup: 1. create a Render service from this repo (New > Blueprint), 2. fill in the
+#         secrets below in the dashboard, 3. deploy. No database to provision.
+
+services:
+  - type: web
+    name: trustmesh-control-plane
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health/ready
+    # SSE responses must not be buffered or cut short by the proxy.
+    autoDeploy: true
+    envVars:
+      # ---- required ------------------------------------------------------
+      - key: APP_ENV
+        value: demo
+      - key: DEBUG
+        value: "false"
+      - key: PORT
+        value: "10000"
+      # /data is ephemeral on the free tier: the registry re-seeds on boot, which is
+      # safe because the seeder is idempotent. Attach a disk and point this at
+      # /data/trustmesh.db to persist demo history across restarts.
+      - key: DATABASE_URL
+        value: sqlite:////data/trustmesh.db
+      # ---- blockchain ---------------------------------------------------
+      # NOTE: http://127.0.0.1:8545 will NOT work here. A Hardhat node cannot run in the
+      # cloud, so use a public testnet RPC (both free) and deploy the contract to it.
+      - key: BLOCKCHAIN_MODE
+        value: auto
+      - key: BLOCKCHAIN_RPC_URL
+        sync: false # set to a public Sepolia/Amoy RPC, e.g.
+        # https://ethereum-sepolia-rpc.publicnode.com
+      - key: BLOCKCHAIN_CONTRACT_ADDRESS
+        sync: false # deployed TrustMeshRegistry address
+      - key: BLOCKCHAIN_PRIVATE_KEY
+        sync: false # deployer key - NEVER a funded key
+      - key: BLOCKCHAIN_NETWORK
+        value: sepolia
+      - key: BLOCKCHAIN_CHAIN_ID
+        value: "11155111"
+      # ---- cors ----------------------------------------------------------
+      # MUST list the origin the frontend is served from, or the browser blocks every
+      # response. Fill this in before deploying, and keep it comma-separated.
+      #   SPA on Vercel  -> https://your-app.vercel.app
+      #   local dev only -> http://localhost:5173,http://127.0.0.1:5173
+      - key: CORS_ORIGINS
+        sync: false
+      # ---- frontend build env (mirror these on the SPA host) ----------------
+      # The SPA needs the public URL of THIS service at build time:
+      #   VITE_API_URL=https://<this-service>.onrender.com
+      # Without it the SPA calls its own origin and 404s on every /api request.

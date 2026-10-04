@@ -1,0 +1,348 @@
+[
+  {
+    "inputs": [],
+    "name": "CommitmentAlreadyExists",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "CommitmentNotFound",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidAgentRef",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidAgreementHash",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidTransactionRef",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "transactionRef",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "registrant",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "agreementHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "buyerAgentRef",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "supplierAgentRef",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "committedAt",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "commitBlock",
+        "type": "uint256"
+      }
+    ],
+    "name": "AgreementCommitted",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "agreementHashScheme",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "agreementHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "transactionRef",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "buyerAgentRef",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "supplierAgentRef",
+        "type": "bytes32"
+      }
+    ],
+    "name": "commitAgreement",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "commitmentCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "commitments",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "agreementHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "transactionRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "buyerAgentRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "supplierAgentRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint64",
+            "name": "committedAt",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "commitBlock",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "registrant",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct TrustMeshRegistry.Commitment",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "transactionRef",
+        "type": "bytes32"
+      }
+    ],
+    "name": "existsByTransactionRef",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "transactionRef",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getCommitment",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "agreementHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "transactionRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "buyerAgentRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "supplierAgentRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint64",
+            "name": "committedAt",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "commitBlock",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "registrant",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct TrustMeshRegistry.Commitment",
+        "name": "record",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bool",
+        "name": "exists",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCommitmentByIndex",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "agreementHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "transactionRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "buyerAgentRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "supplierAgentRef",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint64",
+            "name": "committedAt",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "commitBlock",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "registrant",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct TrustMeshRegistry.Commitment",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "neverStoredOnChain",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "registryVersion",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]

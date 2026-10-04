@@ -1,0 +1,56 @@
+# ---------------------------------------------------------------- secrets
+# Never commit real secrets (spec §27). Only the .env.example templates are tracked.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+keystore/
+keystore-*
+
+# --------------------------------------------------------------- python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ------------------------------------------------------------------ node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# ------------------------------------------------------ hardhat / contracts
+contracts/artifacts/
+contracts/cache/
+contracts/typechain/
+contracts/typechain-types/
+
+# -------------------------------------------------------------- databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# ------------------------------------------------------------ build output
+dist/
+build/
+.vite/
+
+# ---------------------------------------------------------------- editors
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ------------------------------------------------------------------- logs
+# Local uvicorn / dev-server output. Never useful in the repo, and the access log
+# would otherwise commit request paths from local testing.
+*.log

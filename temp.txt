@@ -1,0 +1,937 @@
+You are an expert AI software architect. Read the following comprehensive 23-page hackathon specification for "TrustMesh" completely.
+
+We are building a hackathon project called TrustMesh.
+IMPORTANT: Do NOT start coding immediately.
+First analyze this entire specification carefully, identify architectural inconsistencies, missing pieces,
+implementation risks, and ambiguities, and propose a final refined architecture.
+Only begin implementation after I explicitly say:
+START IMPLEMENTATION
+Do not silently remove important requirements. If something needs to change, explain why and preserve
+the original product goal.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1. PROJECT NAME
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TrustMesh
+Tagline:
+"Secure Trust Infrastructure for Autonomous AI Agents."
+Core product statement:
+"AI can negotiate. TrustMesh makes sure it stays within authority. Blockchain makes the
+commitment verifiable."
+Core architectural principle:
+REASON → ENFORCE → VERIFY
+AI/Gemini = reasoning and negotiation
+TrustMesh = identity, authorization, deterministic policy enforcement, and security
+Blockchain = tamper-evident/verifiable commitment layer
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2. THE PROBLEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Autonomous AI agents are increasingly capable of acting on behalf of organizations.
+In a future where agents from different companies interact directly, an organization needs to know:
+Who is this agent?
+Which organization does it represent?
+•
+•
+•
+•
+•
+1
+Is its identity valid?
+What is it authorized to do?
+Which capabilities does it possess?
+Is the requested action within its authority?
+Does the action violate the transaction's constraints?
+Can suspicious behavior be detected and blocked?
+After two agents reach an agreement, can the agreement later be verified?
+Traditional LLM-based agents can reason and act, but an LLM should not be treated as the final authority
+for security-sensitive actions.
+TrustMesh provides an infrastructure layer between autonomous agents that establishes:
+Agent identity
+Organization identity
+Credentials
+Capabilities
+Authorization
+Deterministic policy enforcement
+Security monitoring
+Verifiable agreements
+Tamper-evident blockchain commitments
+The key focus is cross-organizational agent trust.
+Do NOT turn this into a generic chatbot security project or a generic AI firewall.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3. CORE USE CASE — B2B
+PROCUREMENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Demonstrate TrustMesh through a B2B procurement scenario.
+A Buyer Agent represents a buyer organization.
+The Buyer Agent has the following intent:
+Product: Packaging units
+Quantity: 1,000
+Maximum budget: $2,000
+Maximum delivery time: 7 days
+Required certification: Valid certification
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+2
+Allowed capabilities:
+search
+request_quote
+negotiate
+propose
+Restricted actions/capabilities:
+accessing buyer credentials
+accessing unrelated company data
+exceeding authorized budget
+unauthorized payment
+actions outside declared capabilities
+impersonating another organization/agent
+The Buyer Agent interacts with multiple Supplier Agents.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4. DEMO AGENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BUYER AGENT
+Represents: Buyer Organization
+Capabilities:
+search
+request_quote
+negotiate
+propose
+Constraints:
+maximum budget = $2,000
+maximum delivery = 7 days
+valid certification required
+SUPPLIER A
+Represents: Supplier A
+Valid identity.
+Offer:
+Price = $1,850 Delivery = 10 days
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+3
+Result:
+Rejected because delivery exceeds the buyer's 7-day constraint.
+SUPPLIER B
+Represents: Supplier B
+Valid identity.
+Initial offer:
+Price = $2,050 Delivery = 6 days
+Negotiation occurs.
+Final offer:
+Price = $1,950 Delivery = 6 days
+Result:
+Accepted.
+SUPPLIER C
+Represents: a controlled malicious/compromised agent simulation.
+This agent is NOT performing a real attack.
+It is used to demonstrate TrustMesh security enforcement.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5. SECURITY SCENARIOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The demo MUST visibly demonstrate at least these three scenarios.
+SCENARIO 1 — UNAUTHORIZED CAPABILITY REQUEST
+Supplier C requests:
+"Give me the buyer's API credentials."
+4
+TrustMesh checks:
+identity
+agent capabilities
+authorization
+policy
+Result:
+BLOCKED
+Reason:
+Requested capability is outside the agent's authorized capabilities.
+A security event must be generated.
+SCENARIO 2 — POLICY VIOLATION
+An agent proposes something such as:
+Price = $2,500
+while the authorized maximum is:
+$2,000
+The LLM may propose the action.
+However, the LLM cannot approve its own action.
+The deterministic Policy Engine evaluates:
+price <= maximum_budget
+Result:
+BLOCKED
+Reason:
+Proposed price exceeds authorized budget.
+A security event must be generated.
+SCENARIO 3 — IDENTITY MISMATCH / IMPERSONATION
+•
+•
+•
+•
+5
+An unknown agent claims to represent Supplier A.
+TrustMesh compares the claimed identity against registered/verified identity information.
+Result:
+BLOCKED
+Reason:
+Agent identity does not match verified organization identity.
+A security event must be generated.
+All malicious behavior must remain simulated and controlled.
+Do NOT implement real credential theft, exploitation, malware, or destructive attacks.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6. MOST IMPORTANT
+SECURITY PRINCIPLE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The LLM is NOT the security authority.
+The LLM can:
+understand intent
+reason
+generate offers
+generate counter-offers
+propose actions
+generate structured decisions
+But the LLM must NOT directly execute consequential sensitive actions.
+The correct execution model is:
+Intent ↓ AI reasoning ↓ Agent proposes action ↓ TrustMesh Gateway ↓ Identity verification ↓ Credential
+verification ↓ Capability validation ↓ Authorization ↓ Deterministic Policy Engine ↓ Threat/security checks
+↓ ALLOW / BLOCK ↓ Only if ALLOW → execute action ↓ Event emitted ↓ Audit trail
+This separation must be clearly visible in both the architecture and the UI.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7. PROPOSED SYSTEM
+ARCHITECTURE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Use the following architecture as the starting point.
+•
+•
+•
+•
+•
+•
+6
+Do not redesign it unnecessarily.
+┌───────────────────────────────────────────────────────────│ REACT FRONTEND (Vite) │ │ │ │ Overview / Dashboard │ │ Agent Network (Live Graph) │ │
+Transactions & Negotiation View │ │ Security Center (Alert Stream) │ │ Blockchain Commitment Explorer
+│ │ │ │ REST API + SSE Live Event Stream │
+└──────────────────────────────┬────────────────────────────│ ▼
+┌───────────────────────────────────────────────────────────│ FASTAPI CORE BACKEND │ │ │ │ Intent Ingestion & Validation │ │ Transaction Orchestrator │ │
+Event Dispatcher / Event Bus │ │ REST API Routes │ │ SSE Event Stream │
+└───────────────┬──────────────────────────────┬────────────│ │ ▼ ▼ ┌──────────────────────────┐
+┌───────────────────────────────────┐ │ AI / GEMINI │ │
+TRUSTMESH GATEWAY │ │ │ │ │ │ Intent Parser │ │ Identity Verification │ │ Agent Reasoning │ │
+Credential Verification │ │ Negotiation Reasoning │ │ Capability Validation │ │ Structured JSON Output
+│ │ Trust Evaluation │ │ │ │ Authorization Checks │ │ AI proposes actions │ │ │ │ AI does NOT
+enforce │ │ Determines whether agent is │ │ │ │ authorized to request an action │
+└──────────────┬───────────┘
+└─────────────────┬─────────────────┘ │ │ │ ▼ │
+┌───────────────────────────────────┐ │ │ POLICY ENGINE │ │
+│ │ │ │ Deterministic Budget Checks │ │ │ Delivery Constraints │ │ │ Capability Restrictions │ │ │
+Intent Constraints │ │ │ Authorization Rules │ │ │ Threat Interception │ │ │ │ │ │ Output: ALLOW /
+BLOCK │ │ └─────────────────┬─────────────────┘ │ │ │
+┌────────────┴────────────┐ │ │ │ │ ALLOW BLOCK │ │ │ │ ▼ ▼ │
+┌─────────────────────┐ ┌──────────────────┐ │ │ AGENT
+RUNTIME │ │ SECURITY EVENTS │ │ │ │ │ │ │ │ Buyer Agent │ │ Blocked Action │ │ │ Supplier
+Agent A │ │ Security Alert │ │ │ Supplier Agent B │ │ Reason │ │ │ Supplier Agent C │ │ Severity │
+│ │ Controlled Attack │ │ Timestamp │ │ └──────────┬──────────┘
+└────────┬─────────┘ │ │ │
+└─────────────────────────┤ │ │ │ ▼ │
+┌──────────────────────────────┐ │ │ NEGOTIATION ENGINE │ │ │ │
+│ │ Offer Generation │ │ │ Counter Offers │ │ │ Constraint-Aware Negotiation│ │ │ Final Terms │
+│ └──────────────┬───────────────┘ │ │ │ ▼ │
+┌──────────────────────────────┐ │ │ AGREEMENT ENGINE │ │ │ │
+│ │ Final Agreement │ │ │ RFC 8785 Canonical JSON │ │ │ SHA-256 Hash │ │ │ Agreement Metadata
+│ │ └──────────────┬───────────────┘ │ │ │ ▼ │
+┌──────────────────────────────┐ │ │ BLOCKCHAIN SERVICE │ │ │ │
+│ │ Web3.py / EVM Adapter │ │ │ RPC Connection │ │ │ Transaction Submission │ │ │ Nonce / Gas
+Management │ │ │ Confirmation Tracking │ │ │ Error Handling │ │
+└──────────────┬───────────────┘ │ │ │ ▼ │
+┌──────────────────────────────┐ │ │ PUBLIC EVM TESTNET │ │ │ │
+│ │ TrustMeshRegistry.sol │ │ │ │ │ │ Stores minimal commitment: │ │ │ - Agreement hash │ │ │
+- Transaction ID │ │ │ - Timestamp │ │ │ - Agent / organization refs │ │ │ │ │ │ No sensitive
+negotiation │ │ │ data stored on-chain │ │
+└──────────────────────────────┘
+7
+IMPORTANT:
+The Trust Gateway and Policy Engine are not merely passive modules.
+Every consequential action must pass through them before execution.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8. TRUST EVALUATOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+If the architecture contains a "Reputation Scorer", replace it with:
+Trust Evaluator
+Do NOT invent arbitrary trust scores.
+Trust evaluation should be explainable using:
+Agent identity
+Organization identity
+Credential validity
+Declared capabilities
+Requested capability
+Authorization
+Previous verified interaction/history where available
+Current policy compliance
+The prototype should prioritize explainability over fake numerical sophistication.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9. EVENT DISPATCHER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The Event Dispatcher/Event Bus is a first-class backend component.
+It feeds:
+frontend live activity feed
+agent network visualization
+transaction timeline
+security center
+audit/history
+Events should include:
+AGENT_DISCOVERED IDENTITY_VERIFIED IDENTITY_REJECTED CAPABILITY_CHECKED OFFER_RECEIVED
+NEGOTIATION_STARTED OFFER_UPDATED POLICY_CHECK_STARTED POLICY_ALLOWED POLICY_BLOCKED
+SECURITY_ALERT AGREEMENT_CREATED HASH_GENERATED BLOCKCHAIN_SUBMITTED
+BLOCKCHAIN_CONFIRMED BLOCKCHAIN_FAILED
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+8
+Use SSE or another lightweight mechanism.
+Do NOT introduce Kafka or unnecessary event infrastructure.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10. DETERMINISTIC DEMO
+MODE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This is mandatory.
+The hackathon demo must be reproducible without depending entirely on unpredictable Gemini output or
+external API behavior.
+Demo Mode must deterministically reproduce:
+Buyer Agent → Supplier discovery → Identity verification → Supplier A offer → rejection due to delivery →
+Supplier B offer → negotiation → final accepted offer → Supplier C malicious request → TrustMesh block →
+agreement generation → hash generation → blockchain commitment
+Gemini may still be used for natural-language reasoning and negotiation, but the core demonstration must
+have a deterministic fallback.
+The demo must never fail simply because an LLM response is slightly different.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11. AGREEMENT ENGINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Final agreement should be represented in structured data.
+Preferred process:
+Final Agreement ↓ RFC 8785 Canonical JSON ↓ SHA-256 ↓ Agreement Hash ↓ BlockchainService
+Use SHA-256 only unless there is a concrete technical reason to use another hash.
+The exact canonical agreement should be reproducible so the hash can later be verified.
+Sensitive negotiation information must remain off-chain.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12. BLOCKCHAIN ROLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Blockchain is NOT the security engine.
+TrustMesh performs real-time enforcement.
+9
+Blockchain provides a public, tamper-evident commitment that an agreement existed in a particular form.
+Blockchain should store minimal data such as:
+agreement hash
+transaction ID/reference
+timestamp
+relevant non-sensitive agent/organization references
+Do NOT store:
+credentials
+API keys
+sensitive negotiation content
+private data
+confidential company information
+All blockchain functionality must be isolated behind:
+BlockchainService
+Architecture:
+Agreement Engine ↓ BlockchainService ↓ Web3 / EVM Adapter ↓ TrustMeshRegistry.sol ↓ Public EVM
+Testnet
+If blockchain submission fails:
+TrustMesh security must continue working
+UI shows pending/failed state
+failure is logged
+application does not crash
+The private key must exist only on the backend.
+Never expose it to the frontend.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13. SMART CONTRACT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Contract:
+TrustMeshRegistry.sol
+Purpose:
+Record minimal agreement commitments.
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+10
+The contract should provide a simple mechanism to:
+register an agreement hash
+associate it with a transaction/reference ID
+record timestamp/block information
+emit an event
+retrieve/verify commitment information where practical
+Do not create complicated tokenomics, payments, NFTs, DAO mechanisms, or unnecessary blockchain
+functionality.
+Blockchain is being used for verifiable commitment, not cryptocurrency features.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14. FRONTEND / UI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The frontend is a major part of the hackathon demonstration.
+It should look like:
+Enterprise AI infrastructure for trusted autonomous agents
+NOT:
+generic hacker terminal
+generic crypto dashboard
+excessive neon cyberpunk interface
+Visual direction:
+Dark theme
+Deep navy / blue-black background
+Electric cyan primary
+Teal for verified/trusted states
+Amber for warnings
+Red for blocked/security events
+Subtle violet for AI reasoning where useful
+Off-white text
+Glassmorphism cards
+Subtle borders/shadows/glows
+Professional enterprise appearance
+Do not overuse visual effects.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15. NAVIGATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+11
+Recommended navbar:
+TrustMesh
+Overview Agent Network Transactions Security Blockchain About
+Responsive navbar required.
+Footer:
+TrustMesh — Secure Trust Infrastructure for Autonomous AI Agents
+© 2026 TrustMesh — Hackathon Prototype
+Do NOT claim production certification or production readiness.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16. AGENT NETWORK —
+VISUAL SIGNATURE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The Agent Network should be one of the project's visual signatures.
+Show:
+Buyer Agent ↕ Supplier A Supplier B Supplier C
+Nodes communicate:
+agent identity
+organization
+type
+capabilities
+verification status
+current activity
+Connections communicate agent interaction.
+Visual states:
+Normal communication → normal connection
+Verified identity → trusted/verified indicator
+Negotiation → active connection
+Blocked request → red/blocked event
+•
+•
+•
+•
+•
+•
+12
+Identity mismatch → rejected/blocked connection
+Keep the graph visually impressive but technically reliable.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17. THREE-LAYER UI
+MODEL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The UI must make the central architecture obvious.
+ AGENT
+"What the AI wants/proposes to do."
+ TRUSTMESH
+"Whether the action is authorized and policy-compliant."
+ BLOCKCHAIN
+"What agreement/commitment was actually recorded for later verification."
+Example:
+AI Proposal: Increase offer to $2,500
+TrustMesh: BLOCKED — exceeds authorized budget of $2,000
+Blockchain: No commitment created
+This distinction should appear in the transaction timeline.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18. OVERVIEW
+DASHBOARD ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Show status cards:
+AI / Gemini Trust Engine Policy Engine Blockchain
+Also show:
+Active agents
+Current transaction
+Current negotiation state
+Recent security events
+Recent blockchain commitments
+•
+•
+•
+•
+•
+13
+Live activity feed
+System health
+The judge should understand what the system does within seconds.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 19. TRANSACTIONS PAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Show:
+Transaction ID
+Buyer
+Supplier
+Product
+Quantity
+Budget
+Delivery requirement
+Offers
+Counter-offers
+Negotiation history
+Policy decisions
+Security events
+Final agreement
+SHA-256 hash
+Blockchain status
+Show the complete lifecycle:
+Intent ↓ Discovery ↓ Identity verification ↓ Offers ↓ Negotiation ↓ Policy checks ↓ Security event ↓
+Agreement ↓ Hash ↓ Blockchain commitment
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20. SECURITY CENTER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Display security events as a live stream.
+Each event should show:
+Severity
+Agent
+Organization
+Requested action
+Decision
+Reason
+Timestamp
+Example:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+14
+BLOCKED
+Supplier C
+Requested: buyer_api_credentials
+Decision: BLOCKED
+Reason: Capability not authorized for this agent.
+This should make the security value of TrustMesh immediately visible.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 21. BLOCKCHAIN PAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Show:
+Network
+Chain information
+Contract address
+Connection status
+Agreement commitments
+Agreement hashes
+Transaction hashes
+Timestamp
+Confirmation status
+Explorer link when available
+Never display private keys.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22. UI RELIABILITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Every major UI section must have:
+loading state
+empty state
+error state
+disconnected state
+blockchain pending state
+blockchain failure state
+successful confirmation state
+Blockchain failure must not make the whole application appear broken.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23. LIVE
+DEMONSTRATION FLOW ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+15
+The complete demo should visibly show:
+Buyer starts procurement
+Buyer intent appears
+Supplier agents are discovered
+Identities are verified
+Supplier A sends offer
+TrustMesh evaluates constraints
+Supplier A is rejected
+Supplier B sends offer
+Negotiation starts
+Supplier B updates offer
+Supplier C attempts unauthorized behavior
+TrustMesh detects and blocks it
+Security event appears
+Supplier B reaches valid final agreement
+Agreement is canonicalized
+SHA-256 hash generated
+Blockchain commitment submitted
+Blockchain confirmation appears
+Dashboard/network/timeline update in real time
+The presenter should be able to explain the whole product using this single story.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 24. DEMO STORY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The narrative should be:
+"A buyer gives an autonomous agent authority to procure 1,000 packaging units within a $2,000 budget and
+seven-day delivery limit."
+"The agent discovers suppliers and verifies their identities."
+"Supplier A offers a lower price but cannot meet the delivery constraint."
+"Supplier B meets the delivery requirement but initially exceeds the budget, so the agents negotiate."
+"Meanwhile, a compromised Supplier C agent attempts to obtain an unauthorized capability."
+"TrustMesh does not ask the LLM whether this is safe. It checks identity, capability, authorization, and
+deterministic policy."
+"The request is blocked."
+"The legitimate agents complete their negotiation."
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+11.
+12.
+13.
+14.
+15.
+16.
+17.
+18.
+19.
+16
+"The final agreement is canonicalized, hashed, and committed to a public blockchain so the agreement can
+later be independently verified."
+This is the core hackathon story.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25. BACKEND PROJECT
+STRUCTURE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Use a modular but lightweight FastAPI structure:
+backend/ ├── app/ │ ├── main.py │ │ │ ├── api/ │ │ └── routes/ │ │ ├── agents.py │ │
+├── transactions.py │ │ ├── security.py │ │ ├── blockchain.py │ │ └── health.py │ │ │
+├── agents/ │ │ ├── buyer_agent.py │ │ ├── supplier_agent.py │ │ ├── negotiation.py │ │
+└── agent_registry.py │ │ │ ├── trust/ │ │ ├── trust_engine.py │ │ ├── identity.py │ │
+├── credentials.py │ │ └── trust_evaluator.py │ │ │ ├── security/ │ │ ├── policy_engine.py │
+│ ├── capability_guard.py │ │ ├── threat_detection.py │ │ └── security_events.py │ │ │ ├──
+ai/ │ │ ├── gemini_client.py │ │ ├── prompts.py │ │ └── schemas.py │ │ │ ├── blockchain/
+│ │ ├── service.py │ │ ├── contract.py │ │ └── abi/ │ │ │ ├── agreements/ │ │ ├──
+agreement_engine.py │ │ └── hashing.py │ │ │ ├── models/ │ ├── schemas/ │ ├── services/
+│ ├── config.py │ └── database.py │ ├── tests/ ├── scripts/ │ └── verify_system.py ├──
+requirements.txt ├── .env.example └── README.md
+Blockchain:
+blockchain/ ├── contracts/ │ └── TrustMeshRegistry.sol ├── scripts/ │ └── deploy.js ├── test/
+│ └── TrustMeshRegistry.test.js ├── hardhat.config.js └── README.md
+Do not create files merely for architectural appearance.
+Every module must have a real purpose.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 26. TECHNOLOGY
+CONSTRAINTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Prefer free/open-source tools and free tiers.
+Frontend:
+React
+Vite
+Tailwind CSS
+Backend:
+Python
+FastAPI
+•
+•
+•
+•
+•
+17
+Pydantic
+SQLite
+AI:
+Google Gemini / Google AI Studio
+Blockchain:
+Solidity
+Web3.py
+Public EVM testnet
+Free RPC/faucet where available
+Communication:
+REST
+SSE
+Do not require paid infrastructure unless absolutely necessary.
+If any paid service is proposed, explicitly identify it before implementation.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 27. ENVIRONMENT /
+SECURITY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Use environment variables for:
+Gemini API key
+blockchain RPC URL
+blockchain private key
+contract address
+network configuration
+Never:
+hard-code API keys
+expose private keys to frontend
+commit secrets to Git
+display private keys in logs
+Use:
+.env
+and provide:
+.env.example
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+18
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 28. FILE CONSISTENCY
+RULE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Maintain one authoritative project tree.
+Every time you create or modify a file:
+give its exact path
+explain its purpose
+explain dependencies
+explain which modules call it
+Never reference a file that does not exist.
+Before writing code that imports a module, verify that the module exists or create it first.
+Avoid path/import mismatches.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29. IMPLEMENTATION
+STYLE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+We are working under severe hackathon time constraints.
+Prioritize:
+Complete end-to-end working flow
+Security demonstration
+Strong UI
+Real blockchain commitment
+AI integration
+Documentation
+Additional sophistication only if time remains
+Do NOT spend hours building unnecessary abstractions.
+The system should work end-to-end before advanced features are added.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 30. TESTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+We need at least:
+TEST 1 — SUCCESS FLOW
+Buyer intent → Supplier discovery → identity verification → offer → negotiation → policy checks →
+agreement → hash → blockchain commitment
+•
+•
+•
+•
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+19
+TEST 2 — MALICIOUS AGENT
+Supplier C → unauthorized capability request → TrustMesh blocks it → security event generated →
+legitimate transaction continues
+TEST 3 — POLICY VIOLATION
+Agent proposes amount above authorized budget → policy engine blocks → security event generated
+TEST 4 — IDENTITY MISMATCH
+Unknown/incorrect agent identity → verification fails → interaction blocked
+Also create:
+scripts/verify_system.py
+This should check the major system components and provide a clear result.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 31. OBSERVABILITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The system should make internal behavior visible.
+Every important action should produce a structured event.
+For every consequential action, we should be able to answer:
+Who is the agent?
+Which organization does it represent?
+What capability is it using?
+What action is it requesting?
+What was the original intent?
+Which policy applies?
+Was it allowed or blocked?
+Why?
+What event was emitted?
+If an agreement resulted, what canonical data was hashed?
+If blockchain was used, what commitment was recorded?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 32. IMPORTANT
+DISTINCTION FROM OTHER PROJECTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Do NOT turn TrustMesh into an implementation of an internal AI governance/firewall system.
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+11.
+20
+TrustMesh's unique focus is:
+Trust between autonomous agents belonging to different organizations.
+The project combines:
+Cross-organizational identity
++ Capabilities
++ Authorization
++ Deterministic security enforcement
++ Agent negotiation
++ Verifiable agreements
++ Blockchain commitments
+The blockchain should support this trust model rather than being added as a buzzword.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 33. WHAT NOT TO BUILD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Do NOT add:
+cryptocurrency payments
+tokens
+NFTs
+DAO functionality
+real financial transactions
+real credential theft
+real cyber attacks
+malware
+Kubernetes
+Kafka
+unnecessary microservices
+complex distributed infrastructure
+unnecessary machine-learning models
+complicated reputation algorithms
+fake trust scores
+unnecessary authentication systems
+on-chain sensitive data
+We have approximately 30 hours.
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+21
+Every feature must justify its implementation cost.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 34. FAILURE TOLERANCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The system should degrade gracefully.
+If Gemini fails:
+→ Demo Mode should still work.
+If blockchain RPC fails:
+→ Core TrustMesh security flow should still work.
+If blockchain transaction is pending:
+→ UI should show pending.
+If blockchain transaction fails:
+→ UI should show failure without crashing.
+If an agent produces invalid structured output:
+→ Pydantic/schema validation should reject it safely.
+If a malicious agent requests an unauthorized capability:
+→ Block it before execution.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35. ARCHITECTURAL
+PRINCIPLE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The final architecture should make this statement technically true:
+The AI proposes. TrustMesh decides. The action executes only if authorized. Blockchain records the
+verifiable commitment.
+Or, more simply:
+REASON → ENFORCE → VERIFY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 36. FIRST RESPONSE —
+DO NOT CODE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+22
+Before implementation, return:
+A. Your understanding of the product
+B. Final refined architecture diagram
+C. Final agent/action flow
+D. Final security enforcement flow
+E. Final negotiation flow
+F. Final agreement/hash/blockchain flow
+G. Final frontend architecture
+H. Final backend module structure
+I. Data models/entities required
+J. API endpoints required
+K. Event types required
+L. Security boundaries
+M. Demo Mode design
+N. What you changed from the supplied architecture
+O. Why each change was necessary
+P. Potential technical risks
+Q. What should NOT be implemented because it wastes hackathon time
+R. A realistic implementation order for the remaining hackathon time
+Do not start coding.
+Wait for:
+START IMPLEMENTATION
+23
+
+Based strictly on this specification, generate a markdown file named 'ARCHITECTURE_PROPOSAL.md' in my root directory satisfying Section 36 (FIRST RESPONSE). 
+Do NOT write any application code files yet, as instructed on Page 23 of the spec. Wait for my 'START IMPLEMENTATION' command.

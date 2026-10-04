@@ -1,0 +1,14 @@
+fastapi>=0.111.0,<0.112.0
+uvicorn[standard]>=0.30.0,<0.31.0
+pydantic>=2.7.0,<3.0.0
+pydantic-settings>=2.2.1,<3.0.0
+sqlalchemy>=2.0.30,<2.1.0
+aiosqlite>=0.20.0,<0.21.0
+# web3 7.x is required: the 6.x line pulls eth-typing 4.x -> ckzg 1.x, which has no
+# CPython 3.13 Windows wheel and would need a C toolchain to build from source.
+web3>=7.0.0,<8.0.0
+google-genai>=0.1.1,<1.0.0
+python-dotenv>=1.0.1,<2.0.0
+httpx>=0.27.0,<0.28.0
+pytest>=8.2.0,<9.0.0
+pytest-asyncio>=0.23.7,<0.24.0

@@ -1,0 +1,30 @@
+# Never bake secrets or local state into the image layer.
+.env
+.env.*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+
+# Local artefacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# VCS / editors
+.git/
+.gitignore
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Docs and tests are not needed at runtime
+tests/
+README.md
+Dockerfile
+.dockerignore

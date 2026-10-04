@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * TrustMesh base styles.
+ *
+ * The palette is defined once in tailwind.config.js. This file only handles the page
+ * shell, the glassmorphism surface, focus visibility and scrollbars. Nothing here
+ * fights the design tokens.
+ */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-base text-ink antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'tnum';
+    /* A single soft radial wash keeps the page from reading as flat black. */
+    background-image:
+      radial-gradient(1200px 600px at 12% -10%, rgba(34, 211, 238, 0.07), transparent 60%),
+      radial-gradient(900px 500px at 90% 0%, rgba(167, 139, 250, 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  /* Visible focus for keyboard users — accessibility, not decoration. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-cyan/70 ring-offset-2 ring-offset-base;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-base-500/70;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-base-500;
+  }
+
+  /* Respect users who ask for less motion. The graph and pulses honour this. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Glassmorphism surface used by every card. Backdrop blur is the effect; the border
+     and inner highlight keep it from looking like a flat translucent box. */
+  .glass {
+    @apply rounded-2xl border border-white/[0.07] bg-base-800/55 backdrop-blur-xl shadow-glass;
+  }
+
+  .glass-subtle {
+    @apply rounded-xl border border-white/[0.05] bg-base-700/35 backdrop-blur-md;
+  }
+
+  .glass-hover {
+    @apply transition-colors duration-200 hover:border-cyan/25 hover:bg-base-700/50;
+  }
+
+  /* Section label used above grouped content. */
+  .eyebrow {
+    @apply text-2xs font-semibold uppercase tracking-[0.14em] text-ink-faint;
+  }
+
+  /* Monospace treatment for hashes, ids and rule names. */
+  .hash {
+    @apply font-mono text-xs text-ink-muted;
+  }
+
+  /* Subtle grid backdrop for hero panels. */
+  .grid-bg {
+    @apply bg-grid-faint bg-grid;
+  }
+
+  /* Loading shimmer for skeleton placeholders. */
+  .shimmer {
+    @apply relative overflow-hidden bg-base-600/50;
+  }
+  .shimmer::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer;
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba(148, 163, 184, 0.09),
+      transparent
+    );
+  }
+}
